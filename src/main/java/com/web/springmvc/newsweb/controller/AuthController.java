@@ -1,8 +1,7 @@
 package com.web.springmvc.newsweb.controller;
 
 import com.web.springmvc.newsweb.dto.AuthenticationRequest;
-import com.web.springmvc.newsweb.dto.AuthenticationRespone;
-import com.web.springmvc.newsweb.dto.RegisterRequest;
+import com.web.springmvc.newsweb.dto.AuthenticationResponse;
 import com.web.springmvc.newsweb.dto.UserDTO;
 import com.web.springmvc.newsweb.service.AuthenticationService;
 import com.web.springmvc.newsweb.service.UserService;
@@ -26,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationRespone> authenticate(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(authenticationService.authenticationRequest(request));
     }
 }
