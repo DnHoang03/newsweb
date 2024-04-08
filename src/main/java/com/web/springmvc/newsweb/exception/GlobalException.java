@@ -38,13 +38,13 @@ public class GlobalException {
         return new ResponseEntity<ErrorObject>(er, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(RoleNotFoundException.class)
-    public ResponseEntity<ErrorObject> handleRoleNotFoundException(RoleNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorObject> userAlreadyExistsException(UserAlreadyExistsException ex, WebRequest request) {
         ErrorObject er = new ErrorObject();
-        er.setStatusCode(HttpStatus.NOT_FOUND.value());
+        er.setStatusCode(HttpStatus.CONFLICT.value());
         er.setMessage(ex.getMessage());
         er.setTimestamp(new Date());
-        return new ResponseEntity<ErrorObject>(er, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ErrorObject>(er, HttpStatus.CONFLICT);
     }
 
 }

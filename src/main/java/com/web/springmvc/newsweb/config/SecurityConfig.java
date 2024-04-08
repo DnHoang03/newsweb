@@ -15,6 +15,10 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import static jakarta.servlet.DispatcherType.ERROR;
 import static jakarta.servlet.DispatcherType.FORWARD;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.HttpMethod.DELETE;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -29,7 +33,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
-                        .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(GET, "/api/news/**").hasAnyAuthority("USER","ADMIN")
+                        .requestMatchers(POST, "/api/news/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers(PUT, "/api/news/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers(DELETE, "/api/news/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

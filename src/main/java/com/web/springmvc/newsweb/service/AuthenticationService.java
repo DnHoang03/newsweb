@@ -2,6 +2,7 @@ package com.web.springmvc.newsweb.service;
 
 import com.web.springmvc.newsweb.dto.AuthenticationRequest;
 import com.web.springmvc.newsweb.dto.AuthenticationResponse;
+import com.web.springmvc.newsweb.exception.UserNotFoundException;
 import com.web.springmvc.newsweb.model.User;
 import com.web.springmvc.newsweb.model.UserDetailsImpl;
 import com.web.springmvc.newsweb.repository.UserRepository;
@@ -19,9 +20,10 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticationRequest(AuthenticationRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
-        User user = userRepository.findByUsername(request.getUserName());
+        User user = new User();
+        user = userRepository.findByUsername(request.getUsername());
         String token = jwtService.generateToken(new UserDetailsImpl(user));
         return AuthenticationResponse.builder().token(token).build();
     }

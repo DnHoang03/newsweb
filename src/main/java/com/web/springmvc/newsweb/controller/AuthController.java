@@ -3,6 +3,7 @@ package com.web.springmvc.newsweb.controller;
 import com.web.springmvc.newsweb.dto.AuthenticationRequest;
 import com.web.springmvc.newsweb.dto.AuthenticationResponse;
 import com.web.springmvc.newsweb.dto.UserDTO;
+import com.web.springmvc.newsweb.model.User;
 import com.web.springmvc.newsweb.service.AuthenticationService;
 import com.web.springmvc.newsweb.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +21,13 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     private final UserService userService;
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserDTO request) {
+    public ResponseEntity<UserDTO> register(@RequestBody UserDTO request) {
         return ResponseEntity.ok(userService.register(request));
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+        System.out.println(request);
         return ResponseEntity.ok(authenticationService.authenticationRequest(request));
     }
 }

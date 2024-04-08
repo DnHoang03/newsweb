@@ -1,11 +1,11 @@
 package com.web.springmvc.newsweb.service;
 
 import com.web.springmvc.newsweb.dto.UserDTO;
-import com.web.springmvc.newsweb.exception.RoleNotFoundException;
+import com.web.springmvc.newsweb.exception.UserAlreadyExistsException;
 import com.web.springmvc.newsweb.exception.UserNotFoundException;
+import com.web.springmvc.newsweb.model.Role;
 import com.web.springmvc.newsweb.model.User;
 import com.web.springmvc.newsweb.model.UserDetailsImpl;
-import com.web.springmvc.newsweb.repository.RoleRepository;
 import com.web.springmvc.newsweb.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,12 +16,15 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     public UserDTO createUser(UserDTO userDTO) {
+        if(userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new UserAlreadyExistsException("Username already exist");
+        }
         userDTO.setStatus(1);
-        User user = userRepository.save(mapToEntity(userDTO));
+        User user = mapToEntity(userDTO);
+        userRepository.save(user);
         return userDTO;
     }
 
@@ -38,14 +41,18 @@ public class UserService {
         return null;
     }
 
-    public String register(UserDTO userDTO) {
+    public UserDTO register(UserDTO userDTO) {
         User user = new User();
+        if(userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new UserAlreadyExistsException("Username already exist");
+        }
         user.setUsername(userDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRole(roleRepository.findByCode("USER"));
+        user.setRole(Role.USER);
         user.setStatus(1);
         userRepository.save(user);
-        return jwtService.generateToken(new UserDetailsImpl(user));
+        user.setPassword(null);
+        return mapToDTO(user);
     }
 
     public UserDTO getUserById(Integer id) {
@@ -59,7 +66,11 @@ public class UserService {
             user.setId(userDTO.getId());
         }
         user.setUsername(userDTO.getUsername());
-        user.setRole(roleRepository.findById(userDTO.getRole()).orElseThrow(() -> new RoleNotFoundException("Not found role")));
+        if(userDTO.getRole().equals("USER")) {
+            user.setRole(Role.USER);
+        } else {
+            user.setRole(Role.ADMIN);
+        }
         user.setStatus(userDTO.getStatus());
         user.setPassword(userDTO.getPassword());
         return user;
@@ -71,7 +82,7 @@ public class UserService {
         userDTO.setUsername(user.getUsername());
         userDTO.setPassword(user.getPassword());
         userDTO.setStatus(user.getStatus());
-        userDTO.setRole(user.getRole().getId());
+        userDTO.setRole(user.getRole().name());
         return userDTO;
     }
 }
