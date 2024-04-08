@@ -19,14 +19,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.CREATED);
-    }
-
     @PutMapping("/change-password")
     public  ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO) {
         return new ResponseEntity<>(userService.updateUser(userDTO), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@RequestBody Integer id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }

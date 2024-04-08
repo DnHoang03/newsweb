@@ -37,10 +37,6 @@ public class UserService {
         return userDTO;
     }
 
-    public UserDTO deleteUser(UserDTO userDTO) {
-        return null;
-    }
-
     public UserDTO register(UserDTO userDTO) {
         User user = new User();
         if(userRepository.existsByUsername(userDTO.getUsername())) {
@@ -58,6 +54,10 @@ public class UserService {
     public UserDTO getUserById(Integer id) {
         User user = userRepository.findById(id).orElseThrow(()->new UserNotFoundException("Not found user"));
         return mapToDTO(user);
+    }
+
+    public void deleteUser(Integer id) {
+        userRepository.deleteById(id);
     }
 
     private User mapToEntity(UserDTO userDTO) {
