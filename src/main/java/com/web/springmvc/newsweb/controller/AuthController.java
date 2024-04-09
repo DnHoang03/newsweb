@@ -8,10 +8,7 @@ import com.web.springmvc.newsweb.service.AuthenticationService;
 import com.web.springmvc.newsweb.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,6 +17,12 @@ public class AuthController {
 
     private final AuthenticationService authenticationService;
     private final UserService userService;
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "test";
+    }
+
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO request) {
         return ResponseEntity.ok(userService.register(request));
